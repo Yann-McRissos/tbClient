@@ -8,7 +8,7 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((SRV_IP, SRV_PORT))
 
 req = { "type":"list"}
-
-s.send(json.dumps(req))
+reqstr = json.dumps(req)+"\n"
+s.send(reqstr.encode())
 response = s.recv(1024)
-print(response)
+print(response.strip())
