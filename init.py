@@ -1,12 +1,16 @@
 #!/bin/python3
-
+import sys
 from pyroute2 import IPRoute
 import requests, os, sys, subprocess, time
 
 ip = IPRoute() 
 
+if len(sys.argv) != 2:
+    print("Please give only the name of the config file as argument")
+    sys.exit(1)
+
 #Create VPN tunnel
-vpn_config = 'client1.ovpn'
+vpn_config = sys.argv[1]
 openvpn_cmd = ['/usr/sbin/openvpn', '--config', vpn_config, '--daemon']
 ovpn_process = subprocess.Popen(openvpn_cmd)
 
