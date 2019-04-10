@@ -3,8 +3,10 @@ import sys
 from pyroute2 import IPDB # pip3 install pyroute2
 import requests, os, sys, subprocess, time
 from netaddr import * # pip3 install netaddr
+from gwUtils import * 
 
-def buildTopology(configFile, username=None, password=None):
+def buildTopology(configFile, username=None,
+        password=None):
     ip = IPDB() 
     ifdb = ip.interfaces
     upfilePath = '/tmp/upfile'
@@ -15,7 +17,7 @@ def buildTopology(configFile, username=None, password=None):
         return 1
 
     #Create VPN tunnel
-    openvpn_cmd = ['/usr/sbin/openvpn', '--config', vpn_config, '--daemon']
+    openvpn_cmd = ['/usr/sbin/openvpn', '--config', configFile, '--daemon']
     if username != None and password != None:
         with open(upfilePath, 'w') as upfile:
             upfile.write(username+"\n")
@@ -36,22 +38,10 @@ def buildTopology(configFile, username=None, password=None):
         time.sleep(1)
         i+= 1
 
-
-    #Loops until the ipv4 address is learned. Then gets it.
-    tunaddr = None 
-    while len(ifdb.tun0.ipaddr.ipv4) == 0:
-        sleep(1)
-    tunAddr = ifdb.tun0.ipaddr.ipv4[0]
-
-    tunIp = tunAddr['address']
-    tunMask = tunAddr['prefixlen']
+    tunGW = None
+    while tunGW == None:
+        tunGW = getTunGW()
     
-    #gets the network object representing the VPN
-    tunNet = IPNetwork(str(tunIp)+'/'+str(tunMask))
-    
-    #Obtains the first IP of the subnet. With Openvpn, the server always has the first IP.
-    tunGW = tunNet[1]
-
     #Create VXLAN.
     with ip.create(ifname='vxlan0', kind='vxlan', vxlan_id=42, vxlan_group=str(tunGW), vxlan_port=4789) as vxlan:
         vxlan.up()
@@ -64,7 +54,8 @@ def buildTopology(configFile, username=None, password=None):
         br.add_port(ifdb.eth0)
         br.add_port(ifdb.vxlan0)
         br.up()
-    
+    return 0
+
 if __name__ == "__main__":
     if len(sys.argv) != 2 and len(sys.argv) != 4:
         print("Please give only the name of the config file and credentials as arguments")
