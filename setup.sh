@@ -9,6 +9,8 @@ echo "Les commandes suivantes vont être exécutées"
 echo "apt-get update"
 echo "apt-get install openvpn python3 python3-pip uml-utilities"
 echo "pip3 install pyroute2"
+echo "pip3 install netaddr"
+
 read -p "Etes-vous d'accord? [N]" choix
 choix=${choix:-N}
 
@@ -20,6 +22,7 @@ echo "Installation..."
 apt-get update -y
 apt-get install -y openvpn python3 python3-pip uml-utilities
 pip3 install pyroute2
+pip3 install netaddr
 echo ""
 echo ""
 echo ""
