@@ -1,6 +1,7 @@
 from buildTopology import * #buildTopology(configFile, username, password)
-from gwUtils import * #getTunGW()
+from methods import * #getTunGW()
 from listTwinings import * #listTwinings(ip, port)
+from createLab import *
 import getpass
 import sys
 def getNumber(minimum = None, maximum = None, force=True):
@@ -20,8 +21,6 @@ def getNumber(minimum = None, maximum = None, force=True):
     return choix
 
 
-SRV_IP = None #If set to none, uses the vpn GW ip
-SRV_PORT = 1500
 if __name__ == "__main__":
     username = input("Username: ")
     password = getpass.getpass("Password: ")
@@ -35,11 +34,20 @@ if __name__ == "__main__":
     action = getNumber(1, 2) 
     print("action choisie",action)
     if action == 1:
-        ip = SRV_IP if SRV_IP != None else str(getTunGW())
-        twlist = listTwinings(ip, SRV_PORT)
+        twlist = listTwinings()
         print("liste des academies")
-        for index, tw in enumerate(twlist, start=1):
+        if twlist["error"] == True:
+            print("Error!", twlist["message"])
+            sys.exit(1)
+        for index, tw in enumerate(twlist["response"], start=1):
             print('%d. %s (contact %s)' % (index,tw["login"], tw["email"]) )
         print("Quelle academie choisir?")
-        getNumber(1, len(twlist))
+        choice = getNumber(1, len(twlist))
+        ret = createLab(twlist['response'][choice-1]['academy_id'])
+        if ret['error'] == True:
+            print("Error!", ret['message'])
+            sys.exit(1)
+        print("Lab created! PIN: ", ret['response']['pin'])
+            
 
+        

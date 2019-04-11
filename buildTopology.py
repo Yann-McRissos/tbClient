@@ -3,7 +3,7 @@ import sys
 from pyroute2 import IPDB # pip3 install pyroute2
 import requests, os, sys, subprocess, time
 from netaddr import * # pip3 install netaddr
-from gwUtils import * 
+from methods import * 
 
 def buildTopology(configFile, username=None,
         password=None):
