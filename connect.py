@@ -1,3 +1,4 @@
+from config import *
 from buildTopology import * #buildTopology(configFile, username, password)
 from methods import * #getTunGW()
 from listTwinings import * #listTwinings(ip, port)
@@ -20,6 +21,21 @@ def getNumber(minimum = None, maximum = None, force=True):
             break
     return choix
 
+def joinLab(pin):
+    req = { "ype": "join", "pin":pin}
+    reqstr = json.dumps(req)
+    response = sendServer(reqstr)
+    try:
+        dictResponse = json.loads(response)
+    except:
+        print("Response of the server is not JSON")
+    if dictResponse["status"] == False:
+        print(dictResponse["message"])
+    print("Labo rejoint!")
+    
+        
+
+   
 
 if __name__ == "__main__":
     username = input("Username: ")
@@ -49,5 +65,8 @@ if __name__ == "__main__":
             sys.exit(1)
         print("Lab created! PIN: ", ret['response']['pin'])
             
-
+    elif action == 2:
+        pin = input("Veuillez saisir le code PIN du labo à rejoindre: ")
+        ret = joinLab(pin)
+        
         
