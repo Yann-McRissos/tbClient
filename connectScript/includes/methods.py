@@ -1,5 +1,7 @@
 from pyroute2 import IPDB # pip3 install pyroute2
 from netaddr import * # pip3 install netaddr
+from config import *
+import socket
 
 def getTunGW():
     ip = IPDB()
@@ -19,3 +21,18 @@ def getTunGW():
     tunGW = tunNet[1]
     return tunGW
 
+def sendServer(message):
+    """
+    Sends the string given in parameter to the server
+    """
+    if config['SRV_IP'] == None:
+        ip = str(getTunGW())
+    else:
+        ip = config['SRV_IP']
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((ip, config['SRV_PORT']))
+    message+="\n"
+    s.send(message.encode())
+    with s.makefile() as sockFile:
+        response = sockFile.readline()
+    return response.strip()
