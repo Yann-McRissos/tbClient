@@ -4,16 +4,13 @@ Pour installer il suffit de mettre les fichiers de ce dossier dans le même rép
 
 Le script setup.sh installe les packages nécessaires et doit donc être exécuté en tant que root.
 
-Ensuite, il suffit d'exécuter (toujours en tant que root) le script python init.py.
-Ce script crée le VXLAN et les bridges nécessaires et ouvre un VPN vers le serveur.
+La connexio peut être établie avec le script connect.py dans le dossier.
+Lors d'un labo, les deux académies ont un rôle différent.
+La première académie "initie" la connexion. Cela signifie qu'elle crée une entrée dans la base de données et un PIN est assigné au labo.
+Ce PIN est ensuite envoyé par email à la seconde académie, l'académie "invitée". C'est ce PIN dont elle aura besoin pour se connecter au labo.
 
 La connexion peut être fermée avec le script flush.sh.
-
-Les certificats et clés nécessaires à la connexion VPN sont tous inclus dans l'unique fichier ISIL.ovpn.
 
 En ce qui concerne le câblage, le routeur/switch devra être connecté au port ethernet on-board du raspi.
 Ensuite il suffit que le raspi ait accès à internet pour que le reste fonctionne.
 Vous devriez donc pouvoir utiliser un port ethernet USB ou le WIFI pour l'accès internet.
-
-Bien à vous,
-Yannick
