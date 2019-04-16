@@ -1,13 +1,14 @@
-from includes/config import *
-from includes/buildTopology import * #buildTopology(configFile, username, password)
-from includes/methods import * #getTunGW()
-from includes/listTwinings import * #listTwinings(ip, port)
-from includes/createLab import *
-from includes/joinLab import *
+from includes.config import *
+from includes.buildTopology import * #buildTopology(configFile, username, password)
+from includes.methods import * #getTunGW()
+from includes.listTwinings import * #listTwinings(ip, port)
+from includes.createLab import *
+from includes.joinLab import *
 import getpass
 import sys
 def getNumber(minimum = None, maximum = None, force=True):
     choix = None
+    print("selection d'un nombre entre", minimum, "et",maximum)
     while choix == None:
         strin = input()
         try:
@@ -17,7 +18,7 @@ def getNumber(minimum = None, maximum = None, force=True):
                 choix = None
                 print("Choix incorrect")
         except ValueError:
-            print("Choix incorrect")
+            print("Veuillez entrer un nombre")
         if(force == False):
             break
     return choix
@@ -25,7 +26,7 @@ def getNumber(minimum = None, maximum = None, force=True):
 if __name__ == "__main__":
     username = input("Username: ")
     password = getpass.getpass("Password: ")
-    ret = buildTopology("client.ovpn", username, password)
+    ret = buildTopology("connectScript/client.ovpn", username, password)
     if ret != 0:
         print("Erreur durant la creation du tunnel")
         sys.exit(1)
@@ -43,7 +44,7 @@ if __name__ == "__main__":
         for index, tw in enumerate(twlist["response"], start=1):
             print('%d. %s (contact %s)' % (index,tw["login"], tw["email"]) )
         print("Quelle academie choisir?")
-        choice = getNumber(1, len(twlist))
+        choice = getNumber(1, len(twlist['response']))
         ret = createLab(twlist['response'][choice-1]['academy_id'])
         if ret['error'] == True:
             print("Error!", ret['message'])

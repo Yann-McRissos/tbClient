@@ -1,7 +1,7 @@
 import socket
 import json
-from methods import *
-from config import *
+from includes.methods import *
+from includes.config import *
 def listTwinings():
     req = { "type":"list"}
     reqstr = json.dumps(req)

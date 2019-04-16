@@ -1,5 +1,5 @@
-from config import *
-from methods import *
+from includes.config import *
+from includes.methods import *
 import json
 def createLab(invitedId):
     req = {"type":"create", "invited_id":invitedId}

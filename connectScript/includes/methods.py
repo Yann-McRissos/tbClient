@@ -1,6 +1,6 @@
 from pyroute2 import IPDB # pip3 install pyroute2
 from netaddr import * # pip3 install netaddr
-from config import *
+from includes.config import *
 import socket
 
 def getTunGW():

@@ -1,5 +1,5 @@
-from methods import *
-from config import *
+from includes.methods import *
+from includes.config import *
 import json
 def joinLab(pin):
     req = { "type": "join", "pin":pin}
