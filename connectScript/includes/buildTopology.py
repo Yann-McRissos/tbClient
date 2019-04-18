@@ -17,7 +17,7 @@ def buildTopology(configFile, username=None,
         return 1
 
     #Create VPN tunnel
-    openvpn_cmd = ['/usr/sbin/openvpn', '--config', configFile, '--daemon']
+    openvpn_cmd = ['/usr/sbin/openvpn', '--config', configFile, '--daemon', '--writepid', config['PIDFILE']]
     if username != None and password != None:
         with open(upfilePath, 'w') as upfile:
             upfile.write(username+"\n")
