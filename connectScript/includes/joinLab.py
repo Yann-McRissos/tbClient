@@ -9,7 +9,8 @@ def joinLab(pin):
         dictResponse = json.loads(response)
     except:
         print("Response of the server is not JSON")
-    if dictResponse["status"] == False:
+    if dictResponse["error"] == False:
         print(dictResponse["message"])
-    print("Labo rejoint!")
+    else:
+    	print("Labo rejoint!")
 
