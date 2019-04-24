@@ -24,8 +24,12 @@ def getNumber(minimum = None, maximum = None, force=True):
     return choix
 
 if __name__ == "__main__":
-    username = input("Username: ")
-    password = getpass.getpass("Password: ")
+    if len(sys.argv) < 3:
+        username = input("Username: ")
+        password = getpass.getpass("Password: ")
+    else:
+        username = sys.argv[1]
+        password = sys.argv[2]
     ret = buildTopology("connectScript/client.ovpn", username, password)
     if ret != 0:
         print("Erreur durant la creation du tunnel")
