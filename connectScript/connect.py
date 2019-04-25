@@ -56,7 +56,7 @@ if __name__ == "__main__":
         print("Lab created! PIN: ", ret['response']['pin'])
             
     elif action == 2:
-        pin = input("Veuillez saisir le code PIN du labo à rejoindre: ")
+        pin = input("Veuillez saisir le code PIN du labo a rejoindre: ")
         ret = joinLab(pin)
         
         
