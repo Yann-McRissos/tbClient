@@ -9,3 +9,4 @@ def createLab(invitedId):
     except:
         return None
     return dictResp
+

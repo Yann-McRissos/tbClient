@@ -36,3 +36,20 @@ def sendServer(message):
     with s.makefile() as sockFile:
         response = sockFile.readline()
     return response.strip()
+
+def getNumber(minimum = None, maximum = None, force=True):
+    choix = None
+    print("selection d'un nombre entre", minimum, "et",maximum)
+    while choix == None:
+        strin = input()
+        try:
+            choix = int(strin)
+            if (minimum != None and choix < minimum) or\
+              (maximum != None and choix > maximum):
+                choix = None
+                print("Choix incorrect")
+        except ValueError:
+            print("Veuillez entrer un nombre")
+        if(force == False):
+            break
+    return choix
