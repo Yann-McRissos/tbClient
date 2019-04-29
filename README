@@ -4,7 +4,7 @@ Pour installer il suffit de mettre les fichiers de ce dossier dans le même rép
 
 Le script setup.sh installe les packages nécessaires et doit donc être exécuté en tant que root.
 
-La connexio peut être établie avec le script connect.py dans le dossier.
+La connexion peut être établie avec le script connect.py, exécuté depuis le dossier racine du projet (tbClient/)
 Lors d'un labo, les deux académies ont un rôle différent.
 La première académie "initie" la connexion. Cela signifie qu'elle crée une entrée dans la base de données et un PIN est assigné au labo.
 Ce PIN est ensuite envoyé par email à la seconde académie, l'académie "invitée". C'est ce PIN dont elle aura besoin pour se connecter au labo.
