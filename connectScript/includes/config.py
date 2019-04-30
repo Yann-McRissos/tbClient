@@ -4,5 +4,4 @@ config = dict()
 config['SRV_IP'] = None
 config['SRV_PORT']=1500
 config['PIDFILE'] = "openvpn.pid"
-
-
+config['WAIT_TIME'] = 30

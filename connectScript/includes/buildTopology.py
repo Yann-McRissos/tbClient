@@ -32,8 +32,8 @@ def buildTopology(configFile, username=None,
     #Wait for openvpn to create tun interface
     i = 0
     while 'tun0' not in ifdb:
-        if i > 10:
-            print("tun interface couldn't be created after 10 seconds. It looks like it crashed...")
+        if i > config['WAIT_TIME']:
+            print("tun interface couldn't be created after",config['WAIT_TIME'],"seconds. It looks like it crashed...")
             return 1
         time.sleep(1)
         i+= 1
