@@ -6,18 +6,38 @@ from includes.createLab import *
 from includes.joinLab import *
 import getpass
 import sys
+import psutil
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        username = input("Username: ")
-        password = getpass.getpass("Password: ")
+    if not tunnelExists():
+        if len(sys.argv) < 3:
+            username = input("Username: ")
+            password = getpass.getpass("Password: ")
+        else:
+            username = sys.argv[1]
+            password = sys.argv[2]
+        #Start openvpn    
+        connectOVPN("connectScript/client.ovpn", username, password)
+    
+        #Wait until the tunnel is up or until the process dies
+        ret = waitForTunnelUp()
+        if ret == False:
+            print("Erreur durant la creation du tunnel")
+            pid = pidfile.read()
+            pid = int(pidfile.strip())
+            os.kill(pid, psutil.signal.SIGINT)
+            sys.exit(1)
     else:
-        username = sys.argv[1]
-        password = sys.argv[2]
-    ret = buildTopology("connectScript/client.ovpn", username, password)
-    if ret != 0:
-        print("Erreur durant la creation du tunnel")
-        sys.exit(1)
+        print("Tunnel already set up. Skipping Openvpn connection")
+
+
+    #Create the interfaces
+    ret = vxlanExists()
+    if ret < 2:
+        if ret == 1:
+            print("Error : VXLAN partially set up or incorrectly set up. Please erase config")
+            sys.exit(1)
+        createInterfaces()
     print("Que faire?")
     print("1. Initier un labo")
     print("2. Joindre un labo")

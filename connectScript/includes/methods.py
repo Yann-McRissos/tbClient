@@ -4,8 +4,13 @@ from includes.config import *
 import socket
 
 def getTunGW():
+    """
+    Returns a IPAddress object from netaddr lib
+    """
     ip = IPDB()
     ifdb = ip.interfaces
+    if 'tun0' not in ifdb:
+        return None
     #Loops until the ipv4 address is learned. Then gets it.
     if len(ifdb.tun0.ipaddr.ipv4) == 0:
         return None
