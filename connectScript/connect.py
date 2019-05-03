@@ -23,9 +23,14 @@ if __name__ == "__main__":
         ret = waitForTunnelUp()
         if ret == False:
             print("Erreur durant la creation du tunnel")
-            pid = pidfile.read()
-            pid = int(pidfile.strip())
-            os.kill(pid, psutil.signal.SIGINT)
+            with open(config['PIDFILE'], "r") as pidfile:
+                pid = pidfile.read()
+            pid = int(pid.strip())
+            try:
+                os.kill(pid, psutil.signal.SIGINT)
+            except ProcessLookupError:
+                print("No openvpn process to be killed")
+            os.remove(config['PIDFILE'])
             sys.exit(1)
     else:
         print("Tunnel already set up. Skipping Openvpn connection")

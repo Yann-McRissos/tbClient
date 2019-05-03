@@ -75,8 +75,8 @@ def waitForTunnelUp():
     ip = IPDB() 
     ifdb = ip.interfaces
     #Read openvpn.pid pidfile
-    pidfile = open(config['PIDFILE'], "r")
-    pid = pidfile.read()
+    with open(config['PIDFILE'], "r") as pidfile:
+        pid = pidfile.read()
     pid = int(pid.strip())
     #Wait for openvpn to create tun interface or to die
     i = 0
@@ -88,7 +88,19 @@ def waitForTunnelUp():
         time.sleep(1)
         i+= 1
     if not established:
-        print("tun interface couldn't be created after",config['WAIT_TIME'],"seconds. It looks like it crashed...")
+        if not psutil.pid_exists(pid):
+            print("Openvpn Daemon crashed")
+        else:
+            print("tun interface couldn't be created after",config['WAIT_TIME'],"seconds")
+            choice = None
+            while choice == None:
+                choice = input("Should the script exit now? [Y/n]")
+                if choice.upper() in ["Y", "YES"]:
+                    return False
+                elif choice.upper() in ["N", "NO"]:
+                    return waitForTunnelUp()
+                else:
+                    choice = None
         return False
     
     return True
