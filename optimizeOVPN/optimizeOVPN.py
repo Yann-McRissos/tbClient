@@ -1,12 +1,32 @@
 from string import Template
 import multiprocessing
-from pingUDP import pingUDP 
+#from pingUDP import pingUDP 
 from operator import itemgetter
 import requests
 import time
+import socket
 
 SERVER = "tfe.furest.be"
 NB_PINGS = 10
+
+
+def getNumber(minimum = None, maximum = None, force=True, allowEmpty=False):
+    choix = None
+    while choix == None:
+        strin = input()
+        if strin == "" and allowEmpty==True:
+            return None
+        try:
+            choix = int(strin)
+            if (minimum != None and choix < minimum) or\
+              (maximum != None and choix > maximum):
+                choix = None
+                print("Invalid choice")
+        except ValueError:
+            print("This is not a number")
+        if(force == False):
+            break
+    return choix
 
 def getTemplate(fileName):
     with open(fileName) as f:
@@ -70,7 +90,16 @@ if __name__ == "__main__":
         if result['time'] != float("inf"):
             remoteStr = "".join([remoteStr, "remote tfe.furest.be ", str(result['port']), " tcp\n"])
     ovpnTemplate = getTemplate("template.ovpn")
-    finalOVPN = ovpnTemplate.safe_substitute(REMOTE_LIST=remoteStr,CONNECT_TIMEOUT=30,CONNECT_RETRY=1)
+    print("Please enter the delay between retries [1] :", end='')
+    connect_retry = getNumber(allowEmpty=True)
+    if connect_retry == None:
+        connect_retry = 1
+    print("Please enter the timeout of connection attempts [30] :", end="")
+    connect_timeout = getNumber(allowEmpty=True)
+    if connect_timeout == None:
+        connect_timeout = 30
+
+    finalOVPN = ovpnTemplate.safe_substitute(REMOTE_LIST=remoteStr,CONNECT_TIMEOUT=connect_timeout,CONNECT_RETRY=connect_retry)
     with open("../connectScript/client.ovpn", "w+") as clientvpn:
         clientvpn.write(finalOVPN)
     print("OVPN connection file optimized and replaced!")
