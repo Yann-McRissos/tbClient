@@ -50,14 +50,23 @@ def pingUDP(address):
     return True
     
 def pingTCP(port):
-    try:
-        start_time = time.time()
-        req = requests.get(url="http://portquiz.net:" +str(port))
-        elapsed_time = time.time() - start_time
-        return {"port":port, "time":elapsed_time}
-    except Exception as e:
-        print(e)
-        return {"port":port, "time":float("inf")}
+    start_time = time.time()
+    if port in PORTQUIZ_NOT_HTTP:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.settimeout(10)
+        try:
+            sock.connect(("portquiz.net", port))
+            elapsed_time = time.time() - start_time
+            return {"port":port, "time":elapsed_time}
+        except socket.timeout:
+            return {"port":port, "time":float("inf")}
+    else:
+        try:
+            req = requests.get(url="http://portquiz.net:" +str(port))
+            elapsed_time = time.time() - start_time
+            return {"port":port, "time":elapsed_time}
+        except Exception as e:
+            return {"port":port, "time":float("inf")}
         
 
 def testUDPPort(port):

@@ -2,7 +2,8 @@ from pyroute2 import IPDB # pip3 install pyroute2
 from netaddr import * # pip3 install netaddr
 from includes.config import *
 import socket
-
+import os
+import psutil
 def getTunGW():
     """
     Returns a IPAddress object from netaddr lib
@@ -58,3 +59,33 @@ def getNumber(minimum = None, maximum = None, force=True):
         if(force == False):
             break
     return choix
+
+def killOpenvpn():
+    try:
+        with open(config['PIDFILE'], "r") as pidfile:
+            pid = pidfile.read()
+    except FileNotFoundError:
+        return 
+
+    pid = int(pid.strip())
+    try:
+        os.kill(pid, psutil.signal.SIGINT)
+    except ProcessLookupError:
+        return
+    os.remove(config['PIDFILE'])
+
+def getGWInterfaces():
+    ip = IPDB()
+    ifIndices = []
+    for route in ip.routes:
+        if route.dst == 'default':
+            ifIndices.append(route.oif)
+    if len(ifIndices) == 0:
+        return []
+    ifNames = []
+    for index in ifIndices:
+        ifName = ip.interfaces[index].ifname
+        ifNames.append(ifName)
+    return ifNames
+
+

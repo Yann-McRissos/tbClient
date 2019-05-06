@@ -8,7 +8,20 @@ import getpass
 import sys
 import psutil
 
+
+FORBIDDEN_INTERFACES = ['eth0', 'vxlan0', 'br0', 'tun0']
+
 if __name__ == "__main__":
+
+    gwInterfaces = getGWInterfaces()
+    if len(gwInterfaces) == 0:
+        print("It appears you have no default route. Please make sure you are connected to the internet")
+        sys.exit(1)
+    for interface in gwInterfaces:
+        if interface in FORBIDDEN_INTERFACES:
+            print("It appears", interface, "is configured with a default route!\nPlease make sur that interface is not configured before going further")
+            sys.exit(1)
+
     if not tunnelExists():
         if len(sys.argv) < 3:
             username = input("Username: ")
@@ -16,6 +29,7 @@ if __name__ == "__main__":
         else:
             username = sys.argv[1]
             password = sys.argv[2]
+
         #Start openvpn    
         connectOVPN("connectScript/client.ovpn", username, password)
     
@@ -23,14 +37,7 @@ if __name__ == "__main__":
         ret = waitForTunnelUp()
         if ret == False:
             print("Erreur durant la creation du tunnel")
-            with open(config['PIDFILE'], "r") as pidfile:
-                pid = pidfile.read()
-            pid = int(pid.strip())
-            try:
-                os.kill(pid, psutil.signal.SIGINT)
-            except ProcessLookupError:
-                print("No openvpn process to be killed")
-            os.remove(config['PIDFILE'])
+            killOpenvpn()
             sys.exit(1)
     else:
         print("Tunnel already set up. Skipping Openvpn connection")
