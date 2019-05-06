@@ -8,7 +8,7 @@ import socket
 
 SERVER = "tfe.furest.be"
 NB_PINGS = 10
-
+PORTQUIZ_NOT_HTTP = [22,25,445]
 
 def getNumber(minimum = None, maximum = None, force=True, allowEmpty=False):
     choix = None
