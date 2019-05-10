@@ -26,7 +26,9 @@ def getNumber(minimum = None, maximum = None, force=True):
 
 
 if __name__ == "__main__":
-
+    pathname = os.path.dirname(sys.argv[0])
+    dirname = os.path.abspath(pathname)
+    os.chdir(dirname+"/..")
     gwInterfaces = getGWInterfaces()
     if len(gwInterfaces) == 0:
         print("It appears you have no default route. Please make sure you are connected to the internet")
