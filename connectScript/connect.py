@@ -1,15 +1,29 @@
 from includes.config import *
-from includes.buildTopology import * #buildTopology(configFile, username, password)
-from includes.methods import * #getTunGW()
-from includes.listTwinings import * #listTwinings(ip, port)
-from includes.createLab import *
-from includes.joinLab import *
+from includes.interfaces import *
+from includes.queries import *
 import getpass
 import sys
-import psutil
 
 
 FORBIDDEN_INTERFACES = ['eth0', 'vxlan0', 'br0', 'tun0']
+
+def getNumber(minimum = None, maximum = None, force=True):
+    choix = None
+    print("selection d'un nombre entre", minimum, "et",maximum)
+    while choix == None:
+        strin = input()
+        try:
+            choix = int(strin)
+            if (minimum != None and choix < minimum) or\
+              (maximum != None and choix > maximum):
+                choix = None
+                print("Choix incorrect")
+        except ValueError:
+            print("Veuillez entrer un nombre")
+        if(force == False):
+            break
+    return choix
+
 
 if __name__ == "__main__":
 
@@ -31,7 +45,7 @@ if __name__ == "__main__":
             password = sys.argv[2]
 
         #Start openvpn    
-        connectOVPN("connectScript/client.ovpn", username, password)
+        startOVPN("connectScript/client.ovpn", username, password)
     
         #Wait until the tunnel is up or until the process dies
         ret = waitForTunnelUp()

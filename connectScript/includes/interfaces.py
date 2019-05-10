@@ -1,11 +1,58 @@
-#!/usr/bin/python3
-import sys
 from pyroute2 import IPDB # pip3 install pyroute2
-import requests, os, sys, subprocess, time
-from netaddr import * # pip3 install netaddr
-from includes.methods import * 
-import psutil
+from netaddr import IPNetwork, IPAddress # pip3 install netaddr
+import os, sys, subprocess, time, psutil
+from includes.config import *
 
+def getTunGW():
+    """
+    Returns a IPAddress object from netaddr lib
+    """
+    ip = IPDB()
+    ifdb = ip.interfaces
+    if 'tun0' not in ifdb:
+        return None
+    #Loops until the ipv4 address is learned. Then gets it.
+    if len(ifdb.tun0.ipaddr.ipv4) == 0:
+        return None
+    tunAddr = ifdb.tun0.ipaddr.ipv4[0]
+
+    tunIp = tunAddr['address']
+    tunMask = tunAddr['prefixlen']
+
+    #gets the network object representing the VPN
+    tunNet = IPNetwork(str(tunIp)+'/'+str(tunMask))
+
+    #Obtains the first IP of the subnet. With Openvpn, the server always has the first IP.
+    tunGW = tunNet[1]
+    return tunGW 
+
+def killOpenvpn():
+    try:
+        with open(config['PIDFILE'], "r") as pidfile:
+            pid = pidfile.read()
+    except FileNotFoundError:
+        return 
+
+    pid = int(pid.strip())
+    try:
+        os.kill(pid, psutil.signal.SIGINT)
+    except ProcessLookupError:
+        return
+    os.remove(config['PIDFILE'])
+
+def getGWInterfaces():
+    ip = IPDB()
+    ifIndices = []
+    for route in ip.routes:
+        if route.dst == 'default':
+            ifIndices.append(route.oif)
+    if len(ifIndices) == 0:
+        return []
+    ifNames = []
+    for index in ifIndices:
+        ifName = ip.interfaces[index].ifname
+        ifNames.append(ifName)
+    return ifNames
 
 def tunnelExists():
     """
@@ -50,9 +97,7 @@ def vxlanExists():
         return 1
     return 2
 
-
-
-def connectOVPN(configFile, username=None, password=None):
+def startOVPN(configFile, username=None, password=None):
     ip = IPDB() 
     ifdb = ip.interfaces
     upfilePath = '/tmp/upfile'
@@ -125,17 +170,3 @@ def createInterfaces():
         br.add_port(ifdb.vxlan0)
         br.up()
     return 0
-
-
-if __name__ == "__main__":
-    if len(sys.argv) != 2 and len(sys.argv) != 4:
-        print("Please give only the name of the config file and credentials as arguments")
-        sys.exit(1)    
-    
-    vpn_config = sys.argv[1]
-    if len(sys.argv) == 4:
-        username = sys.argv[2]
-        password = sys.argv[3]
-        buildTopology(vpn_config, username, password)
-    else:
-        buildTopology(vpn_config)   
