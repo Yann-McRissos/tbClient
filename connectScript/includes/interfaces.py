@@ -116,7 +116,7 @@ def startOVPN(configFile, username=None, password=None):
     ovpn_process.wait()
     os.remove(upfilePath)
     
-def waitForTunnelUp():
+def waitForTunnelUp(cli=False):
     ip = IPDB() 
     ifdb = ip.interfaces
     #Read openvpn.pid pidfile
@@ -134,11 +134,13 @@ def waitForTunnelUp():
         i+= 1
     if not established:
         if not psutil.pid_exists(pid):
-            print("Openvpn Daemon crashed")
+            if not cli:
+                print("Openvpn Daemon crashed")
         else:
-            print("tun interface couldn't be created after",config['WAIT_TIME'],"seconds")
+            if not cli:
+                print("tun interface couldn't be created after",config['WAIT_TIME'],"seconds")
             choice = None
-            while choice == None:
+            while choice == None and not cli:
                 choice = input("Should the script exit now? [Y/n]")
                 if choice.upper() in ["Y", "YES"]:
                     return False
