@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import os, sys
 from includes.config import *
 from includes.interfaces import *
@@ -6,7 +7,7 @@ if __name__ == "__main__":
     pathname = os.path.dirname(sys.argv[0])
     dirname = os.path.abspath(pathname)
     os.chdir(dirname+"/..")
-    username = os.getenv("USERNAME", None)
+    username = os.getenv("LOGIN", None)
     password = os.getenv("PASSWORD", None)
     gwInterfaces = getGWInterfaces()
     if len(gwInterfaces) == 0:
@@ -24,7 +25,7 @@ if __name__ == "__main__":
         #! DOES NOT WAIT AND RETURNS AFTER 120 SECONDS!
         ret = waitForTunnelUp(cli=True)
         if ret == False:
-            print('{"error":true, "reason":"Tunnel could not connect"}')
+            print('{"error":true, "reason":"Tunnel could not connect", "login":"'+username+'","password":"'+password+'" }')
             killOpenvpn()
             sys.exit(1)
 

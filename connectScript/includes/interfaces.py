@@ -140,7 +140,9 @@ def waitForTunnelUp(cli=False):
             if not cli:
                 print("tun interface couldn't be created after",config['WAIT_TIME'],"seconds")
             choice = None
-            while choice == None and not cli:
+            if cli:
+                return waitForTunnelUp()
+            while choice == None:
                 choice = input("Should the script exit now? [Y/n]")
                 if choice.upper() in ["Y", "YES"]:
                     return False
@@ -160,9 +162,9 @@ def createInterfaces():
         tunGW = getTunGW()
     
     #Create VXLAN.
-    with ip.create(ifname='vxlan0', kind='vxlan', vxlan_id=42, vxlan_group=str(tunGW), vxlan_port=4789) as vxlan:
-        vxlan.up()
-
+    ip.create(ifname='vxlan0', kind='vxlan', vxlan_id=42, vxlan_group=str(tunGW), vxlan_port=4789)
+    ip.commit()
+    ifdb.vxlan0.up()
     #Make sure the ethernet interface is up 
     ifdb.eth0.up()
     

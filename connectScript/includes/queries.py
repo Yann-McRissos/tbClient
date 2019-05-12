@@ -37,7 +37,7 @@ def joinLab(pin):
     except:
         print("Response of the server is not JSON")
     if dictResponse["error"] == True:
-        print(dictResponse["message"])
+        print(dictResponse["reason"])
     else:
     	print("Labo rejoint!")
     	
