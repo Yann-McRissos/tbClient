@@ -28,6 +28,6 @@ pip3 install psutil
 
 echo ""
 echo ""
-echo "TwinBridge Client a été installé sur votre Raspberry Pi. Pour y accéder, connectez-vous en HTTP sur votre Raspberry Pi.
+echo "TwinBridge Client a été installé sur votre Raspberry Pi. Pour y accéder, connectez-vous en HTTP sur votre Raspberry Pi."
 
 
