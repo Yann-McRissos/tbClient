@@ -9,6 +9,9 @@ if __name__ == "__main__":
     os.chdir(dirname+"/..")
     username = os.getenv("LOGIN", "")
     password = os.getenv("PASSWORD", "")
+    if username == "" or password == "":
+        print('{"error":true, "reason":"Incomplete credentials"}')
+        sys.exit(1)
     gwInterfaces = getGWInterfaces()
     if len(gwInterfaces) == 0:
         print('{"error":true, "reason":"No default route"}')
@@ -20,7 +23,7 @@ if __name__ == "__main__":
 
     if not tunnelExists():
         #Start openvpn    
-        startOVPN("connectScript/client.ovpn", username, password)
+        startOVPN("client.ovpn", username, password)
         #Wait until the tunnel is up or until the process dies
         #! DOES NOT WAIT AND RETURNS AFTER 120 SECONDS!
         ret = waitForTunnelUp(cli=True)
