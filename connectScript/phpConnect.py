@@ -7,8 +7,8 @@ if __name__ == "__main__":
     pathname = os.path.dirname(sys.argv[0])
     dirname = os.path.abspath(pathname)
     os.chdir(dirname+"/..")
-    username = os.getenv("LOGIN", None)
-    password = os.getenv("PASSWORD", None)
+    username = os.getenv("LOGIN", "")
+    password = os.getenv("PASSWORD", "")
     gwInterfaces = getGWInterfaces()
     if len(gwInterfaces) == 0:
         print('{"error":true, "reason":"No default route"}')

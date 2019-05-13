@@ -120,8 +120,11 @@ def waitForTunnelUp(cli=False):
     ip = IPDB() 
     ifdb = ip.interfaces
     #Read openvpn.pid pidfile
-    with open(config['PIDFILE'], "r") as pidfile:
-        pid = pidfile.read()
+    try:
+        with open(config['PIDFILE'], "r") as pidfile:
+            pid = pidfile.read()
+    except:
+        return False
     pid = int(pid.strip())
     #Wait for openvpn to create tun interface or to die
     i = 0
