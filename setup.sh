@@ -8,7 +8,7 @@ fi
 echo "Les commandes suivantes vont être exécutées"
 echo "#apt-get update"
 echo "#apt-get install openvpn python3 python3-pip"
-echo "#pip3 install pyroute2"
+echo "#pip3 install git+https://github.com/svinota/pyroute2/"
 echo "#pip3 install netaddr"
 echo "#pip3 install psutil"
 
@@ -22,7 +22,7 @@ echo "Installation..."
 
 apt-get update -y
 apt-get install -y openvpn python3 python3-pip
-pip3 install pyroute2
+pip3 install git+https://github.com/svinota/pyroute2/
 pip3 install netaddr
 pip3 install psutil
 
