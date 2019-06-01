@@ -26,6 +26,7 @@ def getNumber(minimum = None, maximum = None, force=True):
 
 
 if __name__ == "__main__":
+    #Move current dir to script's parent
     pathname = os.path.dirname(sys.argv[0])
     dirname = os.path.abspath(pathname)
     os.chdir(dirname+"/..")
@@ -47,7 +48,7 @@ if __name__ == "__main__":
             password = sys.argv[2]
 
         #Start openvpn    
-        startOVPN("connectScript/client.ovpn", username, password)
+        startOVPN("client.ovpn", username, password)
     
         #Wait until the tunnel is up or until the process dies
         ret = waitForTunnelUp()
