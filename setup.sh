@@ -12,7 +12,7 @@ echo "#pip3 install git+https://github.com/svinota/pyroute2/"
 echo "#pip3 install netaddr"
 echo "#pip3 install psutil"
 
-read -p "Etes-vous d'accord? [N]" choix
+read -p "Etes-vous d'accord? [y/N]" choix
 choix=${choix:-N}
 
 if [ "${choix,,}" != "y" ] ; then
