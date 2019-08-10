@@ -165,9 +165,9 @@ def createInterfaces():
         tunGW = getTunGW()
     
     #Create VXLAN.
-    ip.create(ifname='vxlan0', kind='vxlan', vxlan_id=42, vxlan_group=str(tunGW), vxlan_port=4789)
-    ip.commit()
-    ifdb.vxlan0.up()
+    with ip.create(ifname='vxlan0', kind='vxlan', vxlan_id=42, vxlan_group=str(tunGW), vxlan_port=4789) as vxlan:
+        vxlan.up()
+        
     #Make sure the ethernet interface is up 
     ifdb.eth0.up()
     
