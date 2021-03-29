@@ -5,29 +5,28 @@ if [ "$EUID" -ne 0 ] ; then
 	exit
 fi
 
-echo "Les commandes suivantes vont être exécutées"
+echo "The following commands will be executed"
 echo "#apt-get update"
 echo "#apt-get install openvpn python3 python3-pip"
-echo "#pip3 install git+https://github.com/svinota/pyroute2/"
+echo "#pip3 install pyroute2"
 echo "#pip3 install netaddr"
 echo "#pip3 install psutil"
 
-read -p "Etes-vous d'accord? [y/N]" choix
+
+read -p "Continue ? [y/N]" choix
 choix=${choix:-N}
 
 if [ "${choix,,}" != "y" ] ; then
 	exit
 fi
-echo "Installation..."
+echo "Starting installation..."
 
 apt-get update -y
 apt-get install -y openvpn python3 python3-pip
-pip3 install git+https://github.com/svinota/pyroute2/
+pip3 install pyroute2
 pip3 install netaddr
 pip3 install psutil
 
 echo ""
 echo ""
-echo "TwinBridge Client a été installé sur votre Raspberry Pi. Pour y accéder, connectez-vous en HTTP sur votre Raspberry Pi."
-
-
+echo "The TwinBridge Client has been succcesfully installed on your system. OBSOLETE: To access it, connect to your system via HTTP."
