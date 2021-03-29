@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ "$EUID" -ne 0 ] ; then
-	echo "Le script doit être exécuté en tant que root!"
+	echo "You must be root to execute this !"
 	exit
 fi
 
