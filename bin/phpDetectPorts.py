@@ -6,7 +6,7 @@ import requests
 import time, socket, json, sys, os
 import concurrent.futures
 
-SERVER = "tfe.furest.be"
+SERVER = "twinning.acadconnect.org"
 NB_PINGS = 3
 TCP_TIMEOUT = 5
 UDP_TIMEOUT = 2
