@@ -65,7 +65,7 @@ def connect(peer):
             sys.exit(1)
         createInterfaces()
     print("Creating new lab...")
-    print(f"Peer: {peer["Name"]}:{peer["Email"]}")
+    print("Peer: " + peer["Name"] + ":" + peer["Email"])
     print("\nGetting list of users...")
     twlist = listTwinings()
     print("User list:")

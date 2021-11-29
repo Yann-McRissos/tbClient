@@ -32,13 +32,13 @@ def getPeering():
             peer["date_created"] = datetime.strptime(peer["date_created"], "%Y-%m-%d %H:%M:%S")
             # Add lab_duration
             delta = peer["end_date"] - peer["start_date"]
-            peer["lab_duration"] = delta.total_seconds() / 3600
+            peer["lab_duration"] = delta.total_seconds()
             print("\tName:\t", peer["Name"])
             print("\tEmail:\t", peer["Email"])
             print("\tStart date:\t", peer["start_date"].strftime("%d/%m/%Y @ %H:%M"))
             print("\tEnd date:\t", peer["end_date"].strftime("%d/%m/%Y @ %H:%M"))
             print("\tDate created:\t", peer["date_created"].strftime("%d/%m/%Y @ %H:%M"))
-            print("\tLab Duration:\t", peer["lab_duration"], "hours")
+            print("\tLab Duration:\t", peer["lab_duration"]/3600, "hours")
             return peer
         else:
             print("Server returned 404. Make sure the address is correct.")

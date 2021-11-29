@@ -8,7 +8,7 @@ Alias=twinbridge
 [Service]
 Type=simple
 WorkingDirectory=/opt/tbClient-Auto/bin
-ExecStart=/usr/bin/python3 connect.py
+ExecStart=/usr/bin/python3 main.py
 RestartSec=10s
 Restart=on-failure
 KillMode=process
