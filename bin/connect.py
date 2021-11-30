@@ -26,7 +26,7 @@ def getNumber(minimum = None, maximum = None, force=True):
     return choice
 
 
-if __name__ == "__main__":
+def connect(peer):
     #Move current dir to script's parent
     pathname = os.path.dirname(sys.argv[0])
     dirname = os.path.abspath(pathname)
@@ -65,14 +65,8 @@ if __name__ == "__main__":
             sys.exit(1)
         createInterfaces()
     print("Creating new lab...")
-    print("Getting next peer...")
-    # Add a timeout
-    peer = getPeering()
-    if peer == 0:
-        print("Error : Could not retrieve peer information.")
-        sys.exit(1)
-    print(f"Peer: {peer.Name}:{peer.Email}")
-    print("\tDone .\nGetting list of users...")
+    print("Peer: " + peer["Name"] + ":" + peer["Email"])
+    print("\nGetting list of users...")
     twlist = listTwinings()
     print("User list:")
     if twlist["error"] == True:
@@ -83,16 +77,16 @@ if __name__ == "__main__":
         print('%d. %s (contact %s)' % (index,tw["login"], tw["email"]) )
         # in current for loop, compare login & email for every user to nextPeering
         # if match, set choice variable
-        if peer.Name == tw["login"] and peer.Email == tw["email"]:
-            print(f"Match! + {index} {tw['login']}:{tw['email']}")
+        if peer["Email"] == tw["email"]:
+            print(f"Match found: {index} {tw['login']}:{tw['email']}")
             # record index
             choice = index
             break
-    print("out of loop")
-    ret = createLab(twlist['response'][choice-1]['academy_id'])
-    if ret['error'] == True:
-        print("Error!", ret['reason'])
-        sys.exit(1)
-    print("Lab created! PIN: ", ret['response']['pin'])
-        
-        
+    if choice == -1:
+        raise Exception("Peer not present in user list")
+    else:
+        ret = createLab(twlist['response'][choice-1]['academy_id'])
+        if ret['error'] == True:
+            print("Error!", ret['reason'])
+            sys.exit(1)
+        print("Lab created! PIN: ", ret['response']['pin'])
