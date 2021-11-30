@@ -1,5 +1,6 @@
 import time
 import threading
+import warnings
 from subprocess import call
 from peeringAPI import *
 from connect import *
@@ -9,36 +10,40 @@ LAB = 0
 
 def thr_lab_timer(name, labDuration):
     global LAB
-    logging.info("Thread %s: starting", name)
-    logging.info("Duration of lab is %s seconds (%s hours)", labDuration, labDuration/3600)
+    print("Thread " + name + ": starting", )
+    print("Duration of lab is " + labDuration + " seconds ("+labDuration/3600+" hours)")
     time.sleep(labDuration)
     LAB = 0
-    logging.info("Thread %s: finishing", name)
+    print("Thread " + name + ": finishing")
 
 
 if __name__ == "__main__":
+    # Remove deprecation warnings coming from the pyroute2 module
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
     # Make sure flush.sh is executable
     os.chmod("./flush.sh", 0o755)
-    while true:
+    while True:
         while LAB == 0:
             try:
                 peer = getPeering()
                 if peer == -1 or peer == 404:
-                    print("Error : Could not retrieve peer information. This issues seems to be with the server")
+                    if peer == 404:
+                        print("Error: Got 404 from the server, is the address correct ?")
+                    else:
+                        print("Error while retrieving peer information.")
+                    print("Retrying in 5 minutes")
                     time.sleep(300) # Sleep for 5 minutes
                 else:
+                    connect(peer)
                     LAB = 1
                     # daemonize the thread so that it stops with the main program
                     thread = threading.Thread(target=thr_lab_timer, args=(1, peer["lab_duration"]), daemon=True)
                     thread.start()
-                    #connect(peer)
-                    i = 0
-                    while i < 1000:
-                        print(i)
                     # Wait for lab to finish
                     thread.join()
                     # Flush interfaces
                     rc = call("./flush.sh")
-            except:
-                print("Error : Could not retrieve peer information. Verify connection information")
+            except Exception as e:
+                print("Error : Could not retrieve peer information. Retrying in 5 minutes.")
+                print("Error message: " + str(e))
                 time.sleep(300) # Sleep for 5 minutes

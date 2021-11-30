@@ -77,16 +77,16 @@ def connect(peer):
         print('%d. %s (contact %s)' % (index,tw["login"], tw["email"]) )
         # in current for loop, compare login & email for every user to nextPeering
         # if match, set choice variable
-        if peer.Name == tw["login"] and peer["Email"] == tw["email"]:
-            print(f"Match! + {index} {tw['login']}:{tw['email']}")
+        if peer["Email"] == tw["email"]:
+            print(f"Match found: {index} {tw['login']}:{tw['email']}")
             # record index
             choice = index
             break
-    print("out of loop")
-    ret = createLab(twlist['response'][choice-1]['academy_id'])
-    if ret['error'] == True:
-        print("Error!", ret['reason'])
-        sys.exit(1)
-    print("Lab created! PIN: ", ret['response']['pin'])
-        
-        
+    if choice == -1:
+        raise Exception("Peer not present in user list")
+    else:
+        ret = createLab(twlist['response'][choice-1]['academy_id'])
+        if ret['error'] == True:
+            print("Error!", ret['reason'])
+            sys.exit(1)
+        print("Lab created! PIN: ", ret['response']['pin'])
